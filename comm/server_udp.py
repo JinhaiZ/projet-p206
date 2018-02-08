@@ -8,7 +8,7 @@ from struct import *
 import numpy as np
 from matplotlib import pyplot as plt
 
-# Create a TCP/IP socket
+# Create a UDP/IP socket
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
 # Bind the socket to the port
