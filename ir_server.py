@@ -53,6 +53,7 @@ if __name__ == '__main__':
             im2 = ax2.imshow(frame)
             im3 = ax3.imshow(frame)
             im4 = ax4.imshow(frame)
+            initialized = True
         else:
             im1.set_data(bg)
             im2.set_data(diff)
