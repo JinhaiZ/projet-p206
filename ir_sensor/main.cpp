@@ -14,7 +14,6 @@
 #include<arpa/inet.h>
 #include<sys/socket.h>
 #define SERVER "192.168.0.100"
-#define BUFLEN 512  //Max length of buffer
 #define PORT 1234   //The port on which to send data
 // network:libs
 
@@ -294,7 +293,7 @@ void CannyThreshold(Mat * cvMat)
 
 int main(int argc, char* argv[])
 {
-
+printf("main func\n");
 /******************/
 /*   VARIABLE     */
 /******************/
@@ -349,10 +348,10 @@ int main(int argc, char* argv[])
   // network:
 
   while(true) {
+      //printf("while loop\n");
       GetDataFromSpi(&cvMat);
       // uchar *buffer = cvMat.data;
-      
-
+      printf("get data from spi\n");
       // network: serialize
       uchar* p;
       int i;
@@ -367,11 +366,10 @@ int main(int argc, char* argv[])
       if (sendto(s, buffer, 4800 , 0 , (struct sockaddr *) &si_other, slen)==-1)
       {
           die("sendto()");
+          printf("send img\n");
       }
 
      // network: serialize
-
-      sequence++;
       ShowImgWithCV(&cvMat);
   }
    SpiClosePort(0);

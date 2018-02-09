@@ -5,7 +5,7 @@
     "username": "root",
     "password": "odroid",
     "remotePath": "/root/ir_sensor",
-    "localPath": "/home/jzhou/projects/S5/ir_sensor",
+    "localPath": "/home/jzhou/projects/projet-p206/ir_sensor",
     "disable": false,
     "private_key": "~/.ssh/flir"
 }]

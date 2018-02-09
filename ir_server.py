@@ -25,17 +25,13 @@ if __name__ == '__main__':
     server_address = ('192.168.0.100', 1234)
     print('starting up on %s port %s' % server_address)
     sock.bind(server_address)
-    # create 4 subplots
-    fig = plt.figure()
-    ax1 = plt.subplot(2,2,1)
-    ax2 = plt.subplot(2,2,2)
-    ax3 = plt.subplot(2,2,3)
-    ax4 = plt.subplot(2,2,4)
 
     bgg = BackgroundGenerator(debug=True)
     hd = HumanDetector(debug=True)
+
+    cv2.namedWindow("window", cv2.WND_PROP_FULLSCREEN)
+    cv2.setWindowProperty("window",cv2.WND_PROP_FULLSCREEN,cv2.WINDOW_FULLSCREEN)
     
-    plt.ion()
     while(True):
         # read a frame, frame is (60, 80, 3) unit8 array
         print('\nwaiting to receive message')
@@ -48,17 +44,6 @@ if __name__ == '__main__':
         frame = np.uint8(frame)
         median, binary, ccl, bg = bgg.apply(frame)
         diff, combined_diff, frame = hd.apply(frame, bg)
-        if not initialized:
-            im1 = ax1.imshow(frame)
-            im2 = ax2.imshow(frame)
-            im3 = ax3.imshow(frame)
-            im4 = ax4.imshow(frame)
-            initialized = True
-        else:
-            im1.set_data(bg)
-            im2.set_data(diff)
-            im3.set_data(combined_diff)
-            im4.set_data(frame)
-        plt.pause(0.0001)
-    plt.ioff() # due to infinite loop, this gets never called.
-    plt.show()
+        cv2.imshow('window', frame/255.0)
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+            break
