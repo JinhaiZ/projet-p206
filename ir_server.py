@@ -14,10 +14,7 @@ from struct import *
 from backgroundSubtraction.BackgroundGenerator import BackgroundGenerator
 from backgroundSubtraction.HumanDetector import HumanDetector
 
-
 if __name__ == '__main__':
-    #Initiate
-    initialized = False
     # Create a UDP/IP socket
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
@@ -31,7 +28,6 @@ if __name__ == '__main__':
 
     cv2.namedWindow("window", cv2.WND_PROP_FULLSCREEN)
     cv2.setWindowProperty("window",cv2.WND_PROP_FULLSCREEN,cv2.WINDOW_FULLSCREEN)
-    
     while(True):
         # read a frame, frame is (60, 80, 3) unit8 array
         print('\nwaiting to receive message')
