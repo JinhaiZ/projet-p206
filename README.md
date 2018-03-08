@@ -105,7 +105,7 @@ The demo below shows the first part of the algorithme, generating a background i
 - The bottom left image shows the binary image of exteacted human areas by labeling, size filtering and morphological operations
 - The bottom right image is the final generated background image
 
-![demo](./backgroundSubtraction/demo.gif)
+![demo](./docs/demo.gif)
 
 ### Human Detection
 
@@ -116,7 +116,7 @@ The demo below shows the second part of the algorithme,human detection based on 
 - The bottom left image shows the binary difference image of detected human areas by labeling, size filtering and morphological operations
 - The bottom right image shows the detected boxs containing of human areas on the orignal input image
 
-![demo](./backgroundSubtraction/demo2.gif)
+![demo](./docs/demo2.gif)
 
 
 ## Built With
