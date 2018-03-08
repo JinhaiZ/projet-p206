@@ -4,6 +4,23 @@
   </head>
   <body>
     <h1>IR Camera Real Time Streaming</h1>
+    <h3><span id="now"></span></h3>
     <img id="bg" src="{{ url_for('video_feed') }}" style=" height: 600px;">
   </body>
 </html>
+
+<script>
+  (function () {
+
+  var clockElement = document.getElementById( "now" );
+
+  function updateClock ( clock ) {
+    clock.innerHTML = new Date().toLocaleString();
+  }
+
+  setInterval(function () {
+      updateClock( clockElement );
+  }, 1000);
+
+  }());
+</script>

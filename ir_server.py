@@ -39,7 +39,7 @@ if __name__ == '__main__':
         frame = np.array(img_tuple).reshape((60,80))
         frame = np.uint8(frame)
         median, binary, ccl, bg = bgg.apply(frame)
-        diff, combined_diff, frame = hd.apply(frame, bg)
+        diff, combined_diff, frame, nb_detection = hd.apply(frame, bg)
         cv2.imshow('window', frame/255.0)
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
