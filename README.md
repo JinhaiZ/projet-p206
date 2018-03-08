@@ -1,5 +1,31 @@
-# Human Detection based on Thermal Imagery
+Human Detection based on Thermal Imagery
+======
+<!-- TOC -->
 
+- [Introduction](#introduction)
+- [Hardware](#hardware)
+- [Getting Started](#getting-started)
+    - [Prerequisites](#prerequisites)
+        - [Potential problems: Flask import error with Anaconda](#potential-problems-flask-import-error-with-anaconda)
+    - [Installing](#installing)
+        - [Installing in the embedded linux system](#installing-in-the-embedded-linux-system)
+        - [Installing in your machine](#installing-in-your-machine)
+- [The Algorithm Revealed](#the-algorithm-revealed)
+    - [Background Generation](#background-generation)
+    - [Human Detection](#human-detection)
+- [Built With](#built-with)
+- [Authors](#authors)
+- [License](#license)
+- [Acknowledgments](#acknowledgments)
+- [Appendix](#appendix)
+    - [Creating videos from captured thermal images for testing usage](#creating-videos-from-captured-thermal-images-for-testing-usage)
+    - [Direct Ethernet connection to Raspberry Pi/Odroid without router](#direct-ethernet-connection-to-raspberry-piodroid-without-router)
+        - [Configuration at the Server Side (optional)](#configuration-at-the-server-side-optional)
+        - [Configuration at the Client Side](#configuration-at-the-client-side)
+        - [Useful Resources](#useful-resources)
+- [Reference](#reference)
+
+<!-- /TOC -->
 ## Introduction
 
 This is the final year project at IMT Atlantique for students majored in computer systems and networks. The aim of the project is to detect human presence with thermal image captured from a thermal camera of an embedded linux system. Since thermal camera has less intrusion to privacy (thermal camera has no color information and it has low resolution) compared to commerical WebCams with high-resolution, we can develop services for elders and people with disabilities based on this project.
@@ -80,7 +106,7 @@ If you have multiple version of Python installed and you have already installed 
 
 To install the application in real environment, you need deploy the programs containing in `./ir_sensor` to your embedded linux system with the Flir One Thermal Camera and running the `web_server` in your machine, it's easier for configuration if the embedded linux system and your machine is directly connected or at the same sub-network.
 
-For information about how to connect the embedded linux system directly to your machine, you can follow the instructions in the [Appendix](#direct-ethernet-connection-to-raspberry-pi-odroid-without-router)
+For information about how to connect the embedded linux system directly to your machine, you can follow the instructions in the [Appendix](#direct-ethernet-connection-to-raspberry-piodroid-without-router)
 
 The installing manuel is divied into the following two parts, the embedded linux system and your machine
 
