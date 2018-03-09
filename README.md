@@ -24,9 +24,13 @@ Human Detection based on Thermal Imagery
 - [Appendix](#appendix)
     - [Creating videos from captured thermal images for testing usage](#creating-videos-from-captured-thermal-images-for-testing-usage)
     - [Direct Ethernet connection to Raspberry Pi/Odroid without router](#direct-ethernet-connection-to-raspberry-piodroid-without-router)
-        - [Configuration at the Server Side (optional)](#configuration-at-the-server-side-optional)
-        - [Configuration at the Client Side](#configuration-at-the-client-side)
+        - [Configuration at the Client Side (optional)](#configuration-at-the-client-side-optional)
+        - [Configuration at the Server Side](#configuration-at-the-server-side)
         - [Useful Resources](#useful-resources)
+    - [Configuration SSH connection with keys between client and server](#configuration-ssh-connection-with-keys-between-client-and-server)
+        - [Server side](#server-side)
+        - [Client side](#client-side)
+- [In a nutshell](#in-a-nutshell)
 - [Reference](#reference)
 
 <!-- /TOC -->
@@ -34,7 +38,7 @@ Human Detection based on Thermal Imagery
 
 ### Object
 
-This is the final year project at IMT Atlantique for students majored in computer systems and networks. The aim of the project is to detect human presence with thermal image captured from a thermal camera of an embedded linux system. Since thermal camera has less intrusion to privacy (thermal camera has no color information and it has low resolution) compared to commerical WebCams with high-resolution, we can develop services for elders and people with disabilities based on this project.
+This is the final year project at IMT Atlantique for students majored in computer systems and networks. The aim of the project is to detect human presence with thermal image captured from a thermal camera of an embedded linux system. Since thermal camera has less intrusion to privacy (thermal camera has no color information and it has low resolution) compared to commercial WebCams with high-resolution, we can develop services for elders and people with disabilities based on this project.
 
 ### Hardware
 
@@ -53,7 +57,7 @@ The hardware is composed of two parts, namely, an embedded linux system and an i
 
 ## Getting Started
 
-In order to run the Human Dectection Application on your local machine for development and testing purposes, you can use recorded thermal imagery videos `test.avi` and `test1.avi` which are put at the sub-directory `./backgroundSubsctraction` and modifiy the corresponing configuration in the `web_server.py`. For example, if your are going to use the video `"./backgroundSubtraction/test.avi"` for testing purpose, just add two arguments in initializing the `IRCamera` class, namely, `test` and `file_name`, as is shown below
+In order to run the Human Detection Application on your local machine for development and testing purposes, you can use recorded thermal imagery videos `test.avi` and `test1.avi` which are put at the sub-directory `./backgroundSubsctraction` and modify the corresponing configuration in the `web_server.py`. For example, if your are going to use the video `"./backgroundSubtraction/test.avi"` for testing purpose, just add two arguments in initializing the `IRCamera` class, namely, `test` and `file_name`, as is shown below
 
 ```py
 @app.route('/video_feed')
@@ -68,7 +72,7 @@ Then open a terminal and input the following command
 FLASK_APP=web_server.py flask run
 ```
 
-A HTTP server will run at http://127.0.0.1:5000/, open a web browser, you can see the video streaming of the recorded video with Human Detection Algorithm running above and generating white bounding boxs that indicat detected humans.
+A HTTP server will run at http://127.0.0.1:5000/, open a web browser, you can see the video streaming of the recorded video with Human Detection Algorithm running above and generating white bounding boxes that indicate detected humans.
 
 ![Video Streaming in Web Interface](./docs/web_server.png)
 
@@ -86,7 +90,7 @@ For Anaconda users, here is an example of how to create a Python 2.7 virtual env
 conda create --clone py27 --name py27
 ```
 
-Then enter the environment by the following commande
+Then enter the environment by the following command
 
 ```
 source activate py27
@@ -120,27 +124,27 @@ To install the application in real environment, you need deploy the programs con
 
 For information about how to connect the embedded linux system directly to your machine, you can follow the instructions in the [Appendix](#direct-ethernet-connection-to-raspberry-piodroid-without-router)
 
-The installing manuel is divied into the following two parts, the embedded linux system and your machine
+The installing manual is divided into the following two parts, the embedded linux system and your machine
 
 #### Installing in the embedded linux system
 
 Deploy the code containing in the `./ir_senosr` file to the embedded linux system that has the infrared camera connected.
 
-SSH to the system, and compile the project by the commande `make`, then you will get an executable file named `flir`, if you have problems in compiling the file, you can try `make clean` then `make`
+SSH to the system, and compile the project by the command `make`, then you will get an executable file named `flir`, if you have problems in compiling the file, you can try `make clean` then `make`
 
 #### Installing in your machine
 
-You don't need to compile anything in your machine, once you downloaded the project reposistory, you have all needed to run the application.
+You don't need to compile anything in your machine, once you downloaded the project repository, you have all needed to run the application.
 
 ### Running
 
-As previously mentioned the application is divided into two parts. The applcation running at the embedded linux system collects thermal images 27 frame per second and then sends them to your machine by UDP packages via Socket, so you need to specifiy the `IP address` and `Port number` of your machine in order to receive these images. To run the part of application at the embedded linux system, you can use the commande in the embedded linux system
+As previously mentioned the application is divided into two parts. The application running at the embedded linux system collects thermal images 27 frame per second and then sends them to your machine by UDP packages via Socket, so you need to specify the `IP address` and `Port number` of your machine in order to receive these images. To run the part of application at the embedded linux system, you can use the command in the embedded linux system
 
 ```
 ./flir your_machine_ip_address your_machine_port_number
 ```
 
-For example, if your machine's IP addresss is 192.168.0.100 and your machine's port number is 1234, the commmand should be as follows
+For example, if your machine's IP address is 192.168.0.100 and your machine's port number is 1234, the command should be as follows
 
 ```
 ./flir 192.168.0.100 1234
@@ -148,7 +152,7 @@ For example, if your machine's IP addresss is 192.168.0.100 and your machine's p
 
 In your machine, you have two applications available to visualize these images and the detection result, either by running `ir_server.py` or `web_server.py`. 
 
-If you prefer to visualize the result in a web interface, you should use `web_server.py`. Before running this Python script, you can modifiy the socket configuration, namly, your machine's IP addresss and the port number you want to use to receive UDP packages from the embedded linux system, the default IP addresss and port number is set to be `'192.168.0.100'` and `1234`. Howerver, if you want to change it in order to fit your condition, you can modify the following line of code in the Python script `irCamera.py`
+If you prefer to visualize the result in a web interface, you should use `web_server.py`. Before running this Python script, you can modify the socket configuration, namely, your machine's IP address and the port number you want to use to receive UDP packages from the embedded linux system, the default IP address and port number is set to be `'192.168.0.100'` and `1234`. However, if you want to change it in order to fit your condition, you can modify the following line of code in the Python script `irCamera.py`
 
 ```py
 # Bind the socket to the port
@@ -173,7 +177,7 @@ flask run
 
 ## The Application Revealed
 
-This part will present the implementation detail of the application. The presentation is divied into two parts:
+This part will present the implementation detail of the application. The presentation is divided into two parts:
 
 - the algorithm used to make the human detection
 - the structure of the application 
@@ -182,35 +186,35 @@ This part will present the implementation detail of the application. The present
 
 Basically, the algorithm is an implementation of the thermal image background subtraction algorithm described in [Human Detection Based on the Generation of a Background Image and Fuzzy System by Using a Thermal Camera](http://www.mdpi.com/1424-8220/16/4/453/htm). Since the method described in this paper has the state-of-the-art performance of human presence detection with thermal imagery, this project choose to implement this algorithm as the core part for presence detection.
 
-The method described in the paper has two main steps, namely, the Background Generation and the Human Detection. The overal procedure of the algorithm is shown below.
+The method described in the paper has two main steps, namely, the Background Generation and the Human Detection. The overall procedure of the algorithm is shown below.
 
 ![The general process of the algorithm](./docs/general-process.png)
 
-Credit: the image above is modified from *Figure 1. Overall Procedure of the proposed methode* from the paper mentioned above by Eun Som Jeon et al.
+Credit: the image above is modified from *Figure 1. overall Procedure of the proposed method* from the paper mentioned above by Eun Som Jeon et al.
 
 
 
-The demo of the implemention are shown below.
+The demo of the implementation are shown below.
 
 #### Background Generation
 
-The demo below shows the first part of the algorithme, generating a background image.
+The demo below shows the first part of the algorithm, generating a background image.
 
 - The top left image shows the preliminary background image obtained by median value from the sequence of images
 - The top right image shows the binary image of extracted candidate human area
-- The bottom left image shows the binary image of exteacted human areas by labeling, size filtering and morphological operations
+- The bottom left image shows the binary image of extracted human areas by labeling, size filtering and morphological operations
 - The bottom right image is the final generated background image
 
 ![demo](./docs/demo.gif)
 
 #### Human Detection
 
-The demo below shows the second part of the algorithme,human detection based on the generated background image.
+The demo below shows the second part of the algorithm,human detection based on the generated background image.
 
 - The top left image shows final generated background image
-- The top right image shows the binary difference image between input image and generated background image, the threshold is determinded dynamically with a fuzzy system
+- The top right image shows the binary difference image between input image and generated background image, the threshold is determined dynamically with a fuzzy system
 - The bottom left image shows the binary difference image of detected human areas by labeling, size filtering and morphological operations
-- The bottom right image shows the detected boxs containing of human areas on the orignal input image
+- The bottom right image shows the detected boxes containing of human areas on the original input image
 
 ![demo](./docs/demo2.gif)
 
@@ -220,7 +224,7 @@ projet-p206
 
 - `ir_sensor`: contains code that need to be deployed to the embedded linux system
     - `flir`: the executable file of the application that needed to be run in the embedded linux system
-    - `main.cpp`: the main code of the applcation
+    - `main.cpp`: the main code of the application
     - `Makefile`: used by the program `make` to compile the application
     - `README.md`: contains instructions about how to use the program `make` and how to write `Makefile`, also contains a tutorial of how to use built-in Background Substractor like `MOG` and `MOG2`
     - other files
@@ -231,11 +235,11 @@ projet-p206
     - `Fuzzy.py`: the program that implements the fuzzy system of the algorithm
     - `HumanDetector.py`: the program that implements the human detection part of the algorithm
     - `main.py`: the program that combines the different parts of the algorithms and can therefore test the performance of the algorithm given input as a video of thermal images
-    - `README.md`: contains basic explaination and demos of the implemented algorithm
+    - `README.md`: contains basic explanation and demos of the implemented algorithm
 - `docs`: contains files related to documentations, like images shown in this document
-    - `comm`: the sokcet communication part of the project are extracted here
+    - `comm`: the socket communication part of the project are extracted here
         - `client_udp.c`: the socket client written in c that integrated in the `/ir_sensor/main.cpp`
-        - `server_udp.py`: the sokect server written in python that integrated in the `/irCamera.py` and `/ir_server.py`
+        - `server_udp.py`: the socket server written in python that integrated in the `/irCamera.py` and `/ir_server.py`
     - other files, mainly images
 - `templates`: contains web page for the Flask web server
     `index.html`: the web interface of the application
@@ -245,7 +249,7 @@ projet-p206
 - `irCamera.py`: the program that collects thermal images from the embedded linux system and runs the human dectection algortihm on these images
 - `web_server.py`: the web server of the application, it takes the detection result from `irCamera.py` and display it via web interface
 - `requirements.txt`: the required packages for the python development environment
-- `start_DHCP.sh`: the script to launch a DHCP server at your machine in order to do a direct connection between your mahcine and the embedded linux system, see more details at [Direct Ethernet connection to Raspberry Pi/Odroid without router](#direct-ethernet-connection-to-raspberry-piodroid-without-router)
+- `start_DHCP.sh`: the script to launch a DHCP server at your machine in order to do a direct connection between your machine and the embedded linux system, see more details at [Direct Ethernet connection to Raspberry Pi/Odroid without router](#direct-ethernet-connection-to-raspberry-piodroid-without-router)
 - `stop_DHCP.sh`: the script to stop the DHCP, see more details at [Direct Ethernet connection to Raspberry Pi/Odroid without router](#direct-ethernet-connection-to-raspberry-piodroid-without-router)
 
 
@@ -266,15 +270,15 @@ projet-p206
 ## Acknowledgments
 
 * Special Thanks to the patient guidance and generous help from **Prof. Panagiotis PAPADAKIS** and **Mr. Jérôme KERDREUX**
-* The main alogrithm of human dection is based on the method described in the paper [Human Detection Based on the Generation of a Background Image and Fuzzy System by Using a Thermal Camera](http://www.mdpi.com/1424-8220/16/4/453/htm), I want to show my gratitude to thier works although their correspondent didn't reply my question related to their works
+* The main algorithm of human detection is based on the method described in the paper [Human Detection Based on the Generation of a Background Image and Fuzzy System by Using a Thermal Camera](http://www.mdpi.com/1424-8220/16/4/453/htm), I want to show my gratitude to thier works although their correspondent didn't reply my question related to their works
 
 ## Appendix
 
 ### Creating videos from captured thermal images for testing usage
 
-Here is a methode to convert multiple iamges to an avi format video without compression which uses the `huffyuv encoder` in order to create a lossless output.
+Here is a method to convert multiple images to an avi format video without compression which uses the `huffyuv encoder` in order to create a lossless output.
 
-Enter the directory where images are saved, use an wildcard expression like `img%d.jpg` to select all the image files that are needed for this convertion, input the following commmand in a terminal
+Enter the directory where images are saved, use an wild-card expression like `img%d.jpg` to select all the image files that are needed for this conversion, input the following command in a terminal
 
 ```sh
 ffmpeg -i img%d.jpg -vcodec huffyuv output.avi
@@ -298,7 +302,7 @@ By default the output will inherit the input frame rate. You can apply the same 
 ffmpeg -r 15 -i img%d.jpg -r 30 -vcodec huffyuv output.avi
 ```
 
-Note that your images must be named in a sequence starting with 1, and although some encoders are lossless there can be some loss due to colorspace conversion. 
+Note that your images must be named in a sequence starting with 1, and although some encoders are lossless there can be some loss due to color space conversion. 
 
 credit : https://ubuntuforums.org/archive/index.php/t-1815998.html
 
@@ -309,11 +313,11 @@ The solution is based on running DHCP service at your workstation (your notebook
 
 Terminology | Explaination
 ------------ | -------------
-Server | Your Single Board Computer, such as a Raspberry Pi or an Odroid
-Client | Your workstation with any linux based systems, like Ubuntu
+Client | Your Single Board Computer, such as a Raspberry Pi or an Odroid
+Server | Your workstation with any linux based systems, like Ubuntu
 
 
-#### Configuration at the Server Side (optional)
+#### Configuration at the Client Side (optional)
 
 1. Enable SSH connection
   - for Raspberry Pi
@@ -331,41 +335,40 @@ Client | Your workstation with any linux based systems, like Ubuntu
     ```
     fin the line `send host-name "foo";` and uncommented it
 
-#### Configuration at the Client Side
+#### Configuration at the Server Side
 
 1. Install a DHCP server
     ```
     sudo apt-get install isc-dhcp-server
     ```
 
-2. Use `ifconfig` to find your Ethernet network interface, it's probably **eth0** but in my case it's **enp61s0**
+2. Use `ifconfig` to find your Ethernet network interface, it's probably **eth0** but in my case it's **enp61s0**, then you need to configure a subnetwork on this interface
 
-3. Backup your initscript of DHCP service
+3. Backup your interface configuration file
     ```
-    sudo cp /etc/dhcp/dhcpd.conf /etc/dhcp/dhcpd.conf.orig
+    sudo cp /etc/network/interfaces /etc/network/interfaces.original
     ```
-4. Modify the initscript of DHCP service
+4. Modify interface configuration file
     ```
-    sudo vim /etc/dhcp/dhcpd.conf
+    sudo vim /etc/network/interfaces
     ```
     
     which should be modified like the output below
     
     ```
-    #Defaults for dhcp initscript
-    #sourced by /etc/init.d/dhcp
-    #installed at /etc/default/isc-dhcp-server by the maintainer scripts
-    #
-    #This is a POSIX shell fragment
-    #
-    #On what interfaces should the DHCP server (dhcpd) serve DHCP requests"
-    #Separate multiple interfaces with spaces, e.g. “eth0 eth1".
-    INTERFACES="enp61s0"
+    auto lo
+    iface lo inet loopback
+
+    iface enp61s0 inet static
+            address 192.168.1.1
+            netmask 255.255.255.0
+            network 192.168.1.0
+
     ```
    
 5. Backup your configuration file of DHCP service
     ```
-    sudo cp /etc/dhcp/dhcpd.conf /etc/dhcp/dhcpd.conf.orig
+    sudo cp /etc/dhcp/dhcpd.conf /etc/dhcp/dhcpd.conf.original
     ```
   
 6. Modify the configuration file of DHCP service
@@ -420,6 +423,51 @@ Client | Your workstation with any linux based systems, like Ubuntu
 4. [Ubuntu Linux Display List of Ethernet Adapter](https://www.cyberciti.biz/faq/show-ethernet-adapter-ubuntu-linux/)
 5. [Connecting a Raspberry Pi to a ubuntu netbook](http://www.mccarroll.net/blog/rpi_netbook/index.html)
 
+### Configuration SSH connection with keys between client and server
+
+#### Server side
+
+1. install ssh server
+    
+    ```
+    sudo apt-get install openssh-server
+    ```
+    
+#### Client side
+
+1. generate a key pair
+    
+    ```
+    ssh-keygen -t rsa
+    ```
+    if your have entered file in which to save the key, for example, `flir`
+    then two file named `flir` and `flir.pub` will be generated at the current folder, represent
+    private key and public key respectively. If not, rsa and rsa.pub is the name by default, and
+    they can be found at the folder `~/.ssh/`
+
+2. the private key and public key should be palced at `$HOME/.ssh/`
+
+    ```
+    mv flir ~/.ssh/
+    mv flir.pub ~/.ssh/
+    ```
+
+3. uplode the public key `flir.pub` to the server
+
+    ```
+    ssh-copy-id -i ~/.ssh/flir.pub <username>@<ipaddress>
+    ```
+
+4. now try logging into the server with `ssh <username>@<ipaddress>`
+
+
+## In a nutshell
+
+- The client generate a private key and public key pair
+- The private key should be placed at the folder `~/.ssh/` of **client**
+- The content of public key should be concatenated at the file `~/.ssh/authorized_keys` of **server**
+- The `~/.ssh` folder should be in mode `drwx------` (700) in order to forbidden to other users
+- Once configured the ssh login with key, it's better to refuse access by password at the **server** side by setting `PasswordAuthentication no` in `/etc/ssh/sshd_config` of the **server**
 
 ## Reference
 
@@ -454,3 +502,5 @@ Client | Your workstation with any linux based systems, like Ubuntu
 - *Online curve fitting*, Online Curve Fitting Tool, https://mycurvefit.com/
 
 - *Inter-process Communication*, Wikipedia, https://en.wikipedia.org/wiki/Inter-process_communication
+
+- *SSH*, Documentation of Ubuntu-fr, https://doc.ubuntu-fr.org/ssh
