@@ -115,9 +115,9 @@ venv.bak/
 /copy
 
 # io performance test files
-/io-test-blit.py
-/io-test-canvas.py
-/io-test-ion.py
+docs/io-test-blit.py
+docs/io-test-canvas.py
+docs/io-test-ion.py
 
 # socket
 /socket

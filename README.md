@@ -3,16 +3,20 @@ Human Detection based on Thermal Imagery
 <!-- TOC -->
 
 - [Introduction](#introduction)
-- [Hardware](#hardware)
+    - [Object](#object)
+    - [Hardware](#hardware)
 - [Getting Started](#getting-started)
     - [Prerequisites](#prerequisites)
         - [Potential problems: Flask import error with Anaconda](#potential-problems-flask-import-error-with-anaconda)
     - [Installing](#installing)
         - [Installing in the embedded linux system](#installing-in-the-embedded-linux-system)
         - [Installing in your machine](#installing-in-your-machine)
-- [The Algorithm Revealed](#the-algorithm-revealed)
-    - [Background Generation](#background-generation)
-    - [Human Detection](#human-detection)
+    - [Running](#running)
+- [The Application Revealed](#the-application-revealed)
+    - [The Human Detection Algorithm](#the-human-detection-algorithm)
+        - [Background Generation](#background-generation)
+        - [Human Detection](#human-detection)
+    - [Application structure](#application-structure)
 - [Built With](#built-with)
 - [Authors](#authors)
 - [License](#license)
@@ -28,9 +32,11 @@ Human Detection based on Thermal Imagery
 <!-- /TOC -->
 ## Introduction
 
+### Object
+
 This is the final year project at IMT Atlantique for students majored in computer systems and networks. The aim of the project is to detect human presence with thermal image captured from a thermal camera of an embedded linux system. Since thermal camera has less intrusion to privacy (thermal camera has no color information and it has low resolution) compared to commerical WebCams with high-resolution, we can develop services for elders and people with disabilities based on this project.
 
-## Hardware
+### Hardware
 
 ![Odroid C1](./docs/hardware.png)
 
@@ -47,7 +53,7 @@ The hardware is composed of two parts, namely, an embedded linux system and an i
 
 ## Getting Started
 
-In order to run the Human Dectection Application on your local machine for development and testing purposes, you can use recorded thermal imagery videos `test.avi` and `test1.avi` which are put at the sub-directory `./backgroundSubsctraction` and modifiy the corresponing configuration in the `web_server.py`. For example, if your are going to use the video `"./backgroundSubtraction/test.avi"` for testing purpose, just add two arguments in initializing the `IRCamera` class, as follows
+In order to run the Human Dectection Application on your local machine for development and testing purposes, you can use recorded thermal imagery videos `test.avi` and `test1.avi` which are put at the sub-directory `./backgroundSubsctraction` and modifiy the corresponing configuration in the `web_server.py`. For example, if your are going to use the video `"./backgroundSubtraction/test.avi"` for testing purpose, just add two arguments in initializing the `IRCamera` class, namely, `test` and `file_name`, as is shown below
 
 ```py
 @app.route('/video_feed')
@@ -78,6 +84,12 @@ For Anaconda users, here is an example of how to create a Python 2.7 virtual env
 
 ```
 conda create --clone py27 --name py27
+```
+
+Then enter the environment by the following commande
+
+```
+source activate py27
 ```
 
 Then under the Python 2.7 development environment, you need install the following packages
@@ -112,17 +124,75 @@ The installing manuel is divied into the following two parts, the embedded linux
 
 #### Installing in the embedded linux system
 
+Deploy the code containing in the `./ir_senosr` file to the embedded linux system that has the infrared camera connected.
+
+SSH to the system, and compile the project by the commande `make`, then you will get an executable file named `flir`, if you have problems in compiling the file, you can try `make clean` then `make`
 
 #### Installing in your machine
 
+You don't need to compile anything in your machine, once you downloaded the project reposistory, you have all needed to run the application.
 
-## The Algorithm Revealed
+### Running
+
+As previously mentioned the application is divided into two parts. The applcation running at the embedded linux system collects thermal images 27 frame per second and then sends them to your machine by UDP packages via Socket, so you need to specifiy the `IP address` and `Port number` of your machine in order to receive these images. To run the part of application at the embedded linux system, you can use the commande in the embedded linux system
+
+```
+./flir your_machine_ip_address your_machine_port_number
+```
+
+For example, if your machine's IP addresss is 192.168.0.100 and your machine's port number is 1234, the commmand should be as follows
+
+```
+./flir 192.168.0.100 1234
+```
+
+In your machine, you have two applications available to visualize these images and the detection result, either by running `ir_server.py` or `web_server.py`. 
+
+If you prefer to visualize the result in a web interface, you should use `web_server.py`. Before running this Python script, you can modifiy the socket configuration, namly, your machine's IP addresss and the port number you want to use to receive UDP packages from the embedded linux system, the default IP addresss and port number is set to be `'192.168.0.100'` and `1234`. Howerver, if you want to change it in order to fit your condition, you can modify the following line of code in the Python script `irCamera.py`
+
+```py
+# Bind the socket to the port
+server_address = ('192.168.0.100', 1234)
+```
+
+The `web_server.py` uses `irCamera.py` in to collect images sent from the embedded linux system, as previously mentioned, you can use recorded thermal imagery videos `test.avi` and `test1.avi` as input to run the web interface, but here, when input comes from the embedded linux system, you don't need any argument in initializing the `IRCamera` class, as is shown below
+
+```py
+@app.route('/video_feed')
+def video_feed():
+    return Response(gen(IRCamera()),
+                    mimetype='multipart/x-mixed-replace; boundary=frame')
+```
+
+then you can run the web server by the following command
+
+```sh
+FLASK_APP=web_server.py
+flask run
+```
+
+## The Application Revealed
+
+This part will present the implementation detail of the application. The presentation is divied into two parts:
+
+- the algorithm used to make the human detection
+- the structure of the application 
+
+### The Human Detection Algorithm
 
 Basically, the algorithm is an implementation of the thermal image background subtraction algorithm described in [Human Detection Based on the Generation of a Background Image and Fuzzy System by Using a Thermal Camera](http://www.mdpi.com/1424-8220/16/4/453/htm). Since the method described in this paper has the state-of-the-art performance of human presence detection with thermal imagery, this project choose to implement this algorithm as the core part for presence detection.
 
-The method described in the paper has two main steps, namely, the Background Generation and the Human Detection. The demo of the implemention are shown below. 
+The method described in the paper has two main steps, namely, the Background Generation and the Human Detection. The overal procedure of the algorithm is shown below.
 
-### Background Generation
+![The general process of the algorithm](./docs/general-process.png)
+
+Credit: the image above is modified from *Figure 1. Overall Procedure of the proposed methode* from the paper mentioned above by Eun Som Jeon et al.
+
+
+
+The demo of the implemention are shown below.
+
+#### Background Generation
 
 The demo below shows the first part of the algorithme, generating a background image.
 
@@ -133,7 +203,7 @@ The demo below shows the first part of the algorithme, generating a background i
 
 ![demo](./docs/demo.gif)
 
-### Human Detection
+#### Human Detection
 
 The demo below shows the second part of the algorithme,human detection based on the generated background image.
 
@@ -143,6 +213,40 @@ The demo below shows the second part of the algorithme,human detection based on 
 - The bottom right image shows the detected boxs containing of human areas on the orignal input image
 
 ![demo](./docs/demo2.gif)
+
+### Application structure
+
+projet-p206
+
+- `ir_sensor`: contains code that need to be deployed to the embedded linux system
+    - `flir`: the executable file of the application that needed to be run in the embedded linux system
+    - `main.cpp`: the main code of the applcation
+    - `Makefile`: used by the program `make` to compile the application
+    - `README.md`: contains instructions about how to use the program `make` and how to write `Makefile`, also contains a tutorial of how to use built-in Background Substractor like `MOG` and `MOG2`
+    - other files
+- `backgroundSubstraction`: contains code that need to be run at your machine
+    - `__init__.py`: used by Python in order to import modules written in this directory
+    - `.gitignore`: used by Git in order not to track unrelated files to the project
+    - `BackgroundGenerator.py`: the program that generates background images from input thermal ima
+    - `Fuzzy.py`: the program that implements the fuzzy system of the algorithm
+    - `HumanDetector.py`: the program that implements the human detection part of the algorithm
+    - `main.py`: the program that combines the different parts of the algorithms and can therefore test the performance of the algorithm given input as a video of thermal images
+    - `README.md`: contains basic explaination and demos of the implemented algorithm
+- `docs`: contains files related to documentations, like images shown in this document
+    - `comm`: the sokcet communication part of the project are extracted here
+        - `client_udp.c`: the socket client written in c that integrated in the `/ir_sensor/main.cpp`
+        - `server_udp.py`: the sokect server written in python that integrated in the `/irCamera.py` and `/ir_server.py`
+    - other files, mainly images
+- `templates`: contains web page for the Flask web server
+    `index.html`: the web interface of the application
+- `__init__.py`: used by Python in order to import modules written in this directory
+- `.gitignore`: used by Git in order not to track unrelated files to the project
+- `ir_server.py`: the program that visualize thermal images from the embedded linux system and shows detected results based on OpenCV `cv2.imshow`
+- `irCamera.py`: the program that collects thermal images from the embedded linux system and runs the human dectection algortihm on these images
+- `web_server.py`: the web server of the application, it takes the detection result from `irCamera.py` and display it via web interface
+- `requirements.txt`: the required packages for the python development environment
+- `start_DHCP.sh`: the script to launch a DHCP server at your machine in order to do a direct connection between your mahcine and the embedded linux system, see more details at [Direct Ethernet connection to Raspberry Pi/Odroid without router](#direct-ethernet-connection-to-raspberry-piodroid-without-router)
+- `stop_DHCP.sh`: the script to stop the DHCP, see more details at [Direct Ethernet connection to Raspberry Pi/Odroid without router](#direct-ethernet-connection-to-raspberry-piodroid-without-router)
 
 
 ## Built With
@@ -161,9 +265,8 @@ The demo below shows the second part of the algorithme,human detection based on 
 
 ## Acknowledgments
 
-* Special Thanks to the patient guidance and generous help from Prof. Panagiotis PAPADAKIS and Mr. Jérôme KERDREUX
-* The main alogrithm of human dection is based on the method described in the paper [Human Detection Based on the Generation of a Background Image and Fuzzy System by Using a Thermal Camera](http://www.mdpi.com/1424-8220/16/4/453/htm), I want to show my gratitude to thier works
-* Thank you 
+* Special Thanks to the patient guidance and generous help from **Prof. Panagiotis PAPADAKIS** and **Mr. Jérôme KERDREUX**
+* The main alogrithm of human dection is based on the method described in the paper [Human Detection Based on the Generation of a Background Image and Fuzzy System by Using a Thermal Camera](http://www.mdpi.com/1424-8220/16/4/453/htm), I want to show my gratitude to thier works although their correspondent didn't reply my question related to their works
 
 ## Appendix
 

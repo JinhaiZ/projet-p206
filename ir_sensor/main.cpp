@@ -13,8 +13,8 @@
 #include<stdlib.h> //exit(0);
 #include<arpa/inet.h>
 #include<sys/socket.h>
-#define SERVER "192.168.0.100"
-#define PORT 1234   //The port on which to send data
+// #define SERVER "192.168.0.100"
+// #define PORT 1234   //The port on which to send data
 // network:libs
 
 #define PACKET_SIZE 164
@@ -304,15 +304,15 @@ printf("main func\n");
 /******************/
    // if time arg is defined
    // process FFC after argv[1] second
-   if(argc==2)
-     {
-	int timeToSleep=atoi(argv[1]);
-        usleep(timeToSleep*1000000);
-//	lepton_disable_auto_ffc();	
-	// enable telemetry (footer, i.e. packets 61-63)
-//	lepton_enable_telemetry(1);
-	lepton_perform_ffc();
-     }   
+//    if(argc==2)
+//      {
+// 	int timeToSleep=atoi(argv[1]);
+//         usleep(timeToSleep*1000000);
+// //	lepton_disable_auto_ffc();	
+// 	// enable telemetry (footer, i.e. packets 61-63)
+// //	lepton_enable_telemetry(1);
+// 	lepton_perform_ffc();
+//      }
 
 /******************/
 /*   TRACKBAR     */
@@ -322,6 +322,11 @@ printf("main func\n");
 /******************/
 /*   MAIN LOOP    */
 /******************/
+
+	if (argc != 3) {
+		printf("Usage: %s nom_machine_distante port_serveur\n", argv[0]);
+		exit(EXIT_FAILURE);
+	}
    //open spi port
    SpiOpenPort(0);
   int sequence = 0;
@@ -337,9 +342,9 @@ printf("main func\n");
 
   memset((char *) &si_other, 0, sizeof(si_other));
   si_other.sin_family = AF_INET;
-  si_other.sin_port = htons(PORT);
+  si_other.sin_port = htons(atoi(argv[2]));
     
-  if (inet_aton(SERVER , &si_other.sin_addr) == 0) 
+  if (inet_aton(argv[1] , &si_other.sin_addr) == 0)
   {
       fprintf(stderr, "inet_aton() failed\n");
       exit(1);
